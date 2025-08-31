@@ -1,0 +1,22 @@
+services:
+  app:
+    image: php:8.4-apache
+    volumes:
+      - ./src:/var/www/html
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.whoami.rule=Host(`paranordle.iacillo.dev.br`)"
+      - "traefik.http.routers.whoami.entrypoints=web"
+
+  traefik:
+    image: traefik:v3.5
+    command:
+      - "--api.insecure=false"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entryPoints.web.address=:80"
+    ports:
+      - 80:80
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    
